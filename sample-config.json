@@ -1,0 +1,15 @@
+{
+  "Brand": "SampleBrand",
+  "Token": "%%",
+  "DefaultDirection": "reverse",
+  "Filters": [
+    { "Type": "Directory", "filter": "svn" },
+    { "Type": "Directory", "filter": "bin" },
+    { "Type": "File", "filter": "cs" },
+    { "Type": "File", "filter": "dtd" }
+  ],
+  "Values": [
+    { "Source": "CompanyName", "value": "Mega Corp" },
+    { "Source": "Copyright", "value": "Copyright 2012.  All Rights Reserved." }
+  ]
+}

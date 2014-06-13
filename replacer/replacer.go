@@ -35,6 +35,14 @@ func LoadOptions(file []byte) {
   fmt.Println("Process Direction: " + conf.DefaultDirection)
 }
 
-func ProcessFile(path string){
+func IsValidDirectory(path string) bool {
+  return true
+}
 
+func IsValidFile(path string) bool {
+  return true
+}
+
+func ProcessFile(path string){
+  fmt.Println("Processing file: " + path)
 }

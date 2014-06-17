@@ -3,10 +3,10 @@
   "Token": "%%",
   "DefaultDirection": "reverse",
   "Filters": [
-    { "Type": "Directory", "filter": "text" },
-    { "Type": "Directory", "filter": "code" },
-    { "Type": "File", "filter": "cs" },
-    { "Type": "File", "filter": "txt" }
+    { "Type": "Directory", "filterPattern" : "test" },
+    { "Type": "Directory", "filterPattern" : "code" },
+    { "Type": "File", "filterPattern" : "cs" },
+    { "Type": "File", "filterPattern" : "txt" }
   ],
   "Values": [
     { "Source": "CompanyName", "value": "Mega Corp" },

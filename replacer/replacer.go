@@ -1,6 +1,7 @@
 package replacer
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -9,8 +10,8 @@ import (
 )
 
 type Value struct {
-	Source string
-	value  string
+	Source string `json:"Source"`
+	Value  string `json:"value"`
 }
 
 type Filter struct {
@@ -77,4 +78,46 @@ func IsValidFileWithConf(path string, conf Config) bool {
 
 func ProcessFile(path string) {
 	fmt.Println("Processing file: " + path)
+
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Println("Error opening file: " + path)
+		return
+	}
+
+  text := ""
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+    text += scanner.Text() + "\n"
+	}
+	file.Close()
+
+  if strings.HasSuffix(text, "\n"){
+      text = text[:len(text)-1]
+  }
+
+  switch conf.DefaultDirection {
+  case "forward":
+    for _, rule := range conf.Values {
+      search := conf.Token + rule.Source + conf.Token
+      replacement := rule.Value
+      text = strings.Replace(text, search, replacement, -1)
+    }
+  case "reverse":
+    for _, rule := range conf.Values {
+      search := rule.Value
+      replacement := conf.Token + rule.Source + conf.Token
+      text = strings.Replace(text, search, replacement, -1)
+    }
+  }
+
+  file, err = os.Create(path)
+  if err != nil {
+    fmt.Println("Error creating file: " + path)
+    return
+  }
+
+  fmt.Fprintln(file, text)
+
+  file.Close()
 }

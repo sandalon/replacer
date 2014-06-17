@@ -3,8 +3,9 @@ package replacer
 import (
 	"encoding/json"
 	"fmt"
-  "strings"
-  "os"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Value struct {
@@ -13,8 +14,8 @@ type Value struct {
 }
 
 type Filter struct {
-	Type   string `json:"Type"`
-	FilterPattern  string `json:"filterPattern"`
+	Type          string `json:"Type"`
+	FilterPattern string `json:"filterPattern"`
 }
 
 type Config struct {
@@ -39,32 +40,39 @@ func LoadOptions(file []byte) {
 }
 
 func IsValidDirectory(path string) bool {
-  return IsValidDirectoryWithConf(path, conf)
+	return IsValidDirectoryWithConf(path, conf)
 }
 
 func IsValidDirectoryWithConf(path string, conf Config) bool {
 	for _, filter := range conf.Filters {
-    if filter.Type == "Directory" {
-      splitDir := strings.Split(path, string(os.PathSeparator))
-      fmt.Println(path)
-      fmt.Println(splitDir[0])
-      for _, dir := range splitDir {
-        if dir == filter.FilterPattern {
-          return true
-        }
-      }
-    }
+		if filter.Type == "Directory" {
+			splitDir := strings.Split(path, string(os.PathSeparator))
+			for _, dir := range splitDir {
+				if dir == filter.FilterPattern {
+					return true
+				}
+			}
+		}
 	}
 
 	return false
 }
 
 func IsValidFile(path string) bool {
-  return IsValidFileWithConf(path, conf)
+	return IsValidFileWithConf(path, conf)
 }
 
 func IsValidFileWithConf(path string, conf Config) bool {
-	return true
+	for _, filter := range conf.Filters {
+		if filter.Type == "File" {
+			extension := filepath.Ext(path)
+			if extension == ("." + filter.FilterPattern) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func ProcessFile(path string) {

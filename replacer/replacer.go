@@ -79,6 +79,7 @@ func IsValidFileWithConf(path string, conf Config) bool {
 
 func ProcessFile(path string) {
 	fmt.Println("Processing file: " + path)
+  replacementMade := false
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -102,23 +103,33 @@ func ProcessFile(path string) {
     for _, rule := range conf.Values {
       search := conf.Token + rule.Source + conf.Token
       replacement := rule.Value
-      text = strings.Replace(text, search, replacement, -1)
+
+      if(strings.Contains(text, search)){
+        text = strings.Replace(text, search, replacement, -1)
+        replacementMade = true
+      }
     }
   case "reverse":
     for _, rule := range conf.Values {
       search := rule.Value
       replacement := conf.Token + rule.Source + conf.Token
-      text = strings.Replace(text, search, replacement, -1)
+
+      if(strings.Contains(text, search)){
+        text = strings.Replace(text, search, replacement, -1)
+        replacementMade = true
+      }
     }
   }
 
-  file, err = os.Create(path)
-  if err != nil {
-    fmt.Println("Error creating file: " + path)
-    return
+  if replacementMade {
+    file, err = os.Create(path)
+    if err != nil {
+      fmt.Println("Error creating file: " + path)
+      return
+    }
+
+    fmt.Fprintln(file, text)
+
+    file.Close()
   }
-
-  fmt.Fprintln(file, text)
-
-  file.Close()
 }

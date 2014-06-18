@@ -45,18 +45,19 @@ func IsValidDirectory(path string) bool {
 }
 
 func IsValidDirectoryWithConf(path string, conf Config) bool {
+  isValid := true
 	for _, filter := range conf.Filters {
 		if filter.Type == "Directory" {
 			splitDir := strings.Split(path, string(os.PathSeparator))
 			for _, dir := range splitDir {
 				if dir == filter.FilterPattern {
-					return true
+					isValid = false
 				}
 			}
 		}
 	}
 
-	return false
+	return isValid
 }
 
 func IsValidFile(path string) bool {
